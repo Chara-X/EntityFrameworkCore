@@ -15,17 +15,17 @@ namespace EntityFrameworkCore.PropertySerializers.Concrete
             {
                 false => option switch
                 {
-                    SerializeOption.JoinsUnion => null,
-                    SerializeOption.ColumnsSub => ColumnsUnion(property, ns),
-                    SerializeOption.ColumnsUnion => ColumnsSub(property, ns),
+                    SerializeOption.ColumnsSub => ColumnsSub(property, ns),
+                    SerializeOption.ColumnsUnion => ColumnsUnion(property, ns),
+                    SerializeOption.LeftJoinsUnion => null,
                     _ => throw new InvalidEnumArgumentException()
                 },
                 _ => throw new InvalidEnumArgumentException()
             };
         }
 
-        private static string ColumnsUnion(PortableProperty property, string ns) => $"\n{($"{ns}.{property.Fullname}").ReplaceLast()} AS {property.Fullname},";
-
         private static string ColumnsSub(PortableProperty property, string ns) => $"\n{($"{ns}.{property.Fullname}").ReplaceFirst()} AS {property.Fullname},";
+
+        private static string ColumnsUnion(PortableProperty property, string ns) => $"\n{($"{ns}.{property.Fullname}").ReplaceLast()} AS {property.Fullname},";
     }
 }

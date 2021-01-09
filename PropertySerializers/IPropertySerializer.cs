@@ -11,6 +11,6 @@ namespace EntityFrameworkCore.PropertySerializers
     {
         ColumnsSub,
         ColumnsUnion,
-        JoinsUnion,
+        LeftJoinsUnion,
     }
 }
