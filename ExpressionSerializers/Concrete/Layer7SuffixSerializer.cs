@@ -20,9 +20,12 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
 
         private string MemberAccess(MemberExpression exp)
         {
-            if (exp.Expression.NodeType == ExpressionType.Parameter)
-                return Base(exp.Expression) + "." + exp.Member.Name;
-            return Base(exp.Expression) + "_" + exp.Member.Name;
+            return exp.Expression.NodeType switch
+            {
+                ExpressionType.Parameter => Base(exp.Expression) + "." + exp.Member.Name,
+                ExpressionType.MemberAccess=> Base(exp.Expression) + "_" + exp.Member.Name,
+                _ => Default(exp)
+            };
         }
 
         private string Default(Expression exp) => Secondary.Serialize(exp);

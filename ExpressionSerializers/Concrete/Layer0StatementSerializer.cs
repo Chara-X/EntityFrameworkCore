@@ -33,7 +33,7 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
             };
         }
 
-        private static string Union(UnionExpression exp) => $"SELECT {PropertiesSerializer.ColumnsUnion(exp.EntityType,"this")} FROM {exp.EntityType.Name} AS this {PropertiesSerializer.LeftJoinsUnion(exp.EntityType,"this")}";
+        private static string Union(UnionExpression exp) => $"SELECT {PropertiesSerializer.ColumnsUnion(exp.EntityType,"this")} FROM [{exp.EntityType.Name}] AS this {PropertiesSerializer.LeftJoinsUnion(exp.EntityType,"this")}";
 
         private string Select(SelectExpression exp) => $"SELECT {PropertiesSerializer.ColumnsSub(exp.Selector.ReturnType,Secondary.Serialize(exp.Selector.Body))} FROM ({Serialize(exp.Sub)}) AS this";
 

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace EntityFrameworkCore.ExpressionSerializers.Concrete
 {
@@ -11,15 +10,14 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
         {
             return exp.NodeType switch
             {
-                ExpressionType.Constant => Constant((ConstantExpression) exp),
-                ExpressionType.Call => Call((MethodCallExpression)exp),
+                ExpressionType.MemberAccess => Value(exp),
+                ExpressionType.Constant => Value(exp),
+                ExpressionType.Call => Value(exp),
                 ExpressionType.Parameter => "this",
-                _ => throw new InvalidEnumArgumentException(exp.NodeType.ToString())
+                _ => null
             };
         }
 
-        private static string Constant(ConstantExpression exp) => '\'' + exp.Value.ToString() + '\'';
-
-        private static string Call(Expression exp) => Expression.Lambda(exp, null).Compile().DynamicInvoke()?.ToString();
+        private static string Value(Expression exp) => $"'{Expression.Lambda(exp).Compile().DynamicInvoke()}'";
     }
 }
