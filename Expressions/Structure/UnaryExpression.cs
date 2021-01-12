@@ -2,10 +2,10 @@
 
 namespace EntityFrameworkCore.Expressions.Structure
 {
-    public class UnaryExpression : Expression
+    public abstract class UnaryExpression : CachedExpression
     {
         public Expression Sub { get; set; }
 
-        public UnaryExpression(Expression sub) => Sub = sub;
+        protected UnaryExpression(Expression sub) => Sub = sub;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace EntityFrameworkCore.Expressions.Structure
 {
-    public class PrefixExpression : UnaryExpression
+    public abstract class PrefixExpression : UnaryExpression
     {
-        public PrefixExpression(Expression sub) : base(sub) { }
+        protected PrefixExpression(Expression sub) : base(sub) { }
     }
 }
