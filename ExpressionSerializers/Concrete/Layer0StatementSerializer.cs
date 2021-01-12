@@ -18,7 +18,7 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
         private string Base(Expression exp)
         {
             var cached = (CachedExpression) exp;
-            //if (cached.Sql != null) return cached.Sql;
+            if (cached.Sql != null) return cached.Sql;
             cached.Sql = exp switch
             {
                 UnionExpression e => Union(e),
