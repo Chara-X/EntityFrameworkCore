@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
+using EntityFrameworkCore.Expressions;
 using EntityFrameworkCore.Expressions.Concrete;
 using EntityFrameworkCore.ExpressionSerializers.Structure;
 using EntityFrameworkCore.PropertySerializers.Tools;
@@ -15,22 +17,26 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
 
         private string Base(Expression exp)
         {
-            return exp switch
+            var cached = (CachedExpression) exp;
+            //if (cached.Sql != null) return cached.Sql;
+            cached.Sql = exp switch
             {
                 UnionExpression e => Union(e),
                 SelectExpression e => Select(e),
                 WhereExpression e => Where(e),
-                CountExpression e => Count(e),
-                FirstExpression e => First(e),
                 MaxExpression e => Max(e),
                 MinExpression e => Min(e),
                 SumExpression e => Sum(e),
+                CountExpression e => Count(e),
                 TakeExpression e => Take(e),
-                OrderByExpression e => OrderBy(e),
+                SkipExpression e => Skip(e),
+                FirstExpression e => First(e),
                 DistinctExpression e => Distinct(e),
+                OrderByExpression e => OrderBy(e),
                 OrderByDescendingExpression e => OrderByDescending(e),
                 _ => throw new InvalidEnumArgumentException()
             };
+            return cached.Sql;
         }
 
         private static string Union(UnionExpression exp) => $"SELECT {PropertiesSerializer.ColumnsUnion(exp.EntityType,"this")} FROM [{exp.EntityType.Name}] AS this {PropertiesSerializer.LeftJoinsUnion(exp.EntityType,"this")}";
@@ -39,22 +45,24 @@ namespace EntityFrameworkCore.ExpressionSerializers.Concrete
 
         private string Where(WhereExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this WHERE {Secondary.Serialize(exp.Predicate.Body)}";
 
-        private string OrderBy(OrderByExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this ORDER BY {Secondary.Serialize(exp.KeySelector.Body)}";
-
-        private string OrderByDescending(OrderByDescendingExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this ORDER BY {Secondary.Serialize(exp.KeySelector.Body)} DESC";
-
-        private string Count(UnaryExpression exp) => $"SELECT COUNT(*) FROM ({Serialize(exp.Sub)}) AS this";
-
         private string Max(MaxExpression exp) => $"SELECT MAX({Secondary.Serialize(exp.Selector.Body)}) FROM ({Serialize(exp.Sub)}) AS this";
 
         private string Min(MinExpression exp) => $"SELECT MIN({Secondary.Serialize(exp.Selector.Body)}) FROM ({Serialize(exp.Sub)}) AS this";
 
         private string Sum(SumExpression exp) => $"SELECT SUM({Secondary.Serialize(exp.Selector.Body)}) FROM ({Serialize(exp.Sub)}) AS this";
 
-        private string Distinct(UnaryExpression exp) => $"SELECT DISTINCT * FROM ({Serialize(exp.Sub)}) AS this";
+        private string Count(UnaryExpression exp) => $"SELECT COUNT(*) FROM ({Serialize(exp.Sub)}) AS this";
 
         private string Take(TakeExpression exp) => $"SELECT TOP({exp.Count}) * FROM ({Serialize(exp.Sub)}) AS this";
 
+        private string Skip(SkipExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this ORDER BY {Secondary.Serialize(exp.KeySelector.Body)} OFFSET {exp.Count} ROWS";
+
         private string First(FirstExpression exp) => $"SELECT TOP(1) * FROM ({Serialize(exp.Sub)}) AS this {(exp.Predicate == null ? null : "WHERE " + Secondary.Serialize(exp.Predicate.Body))}";
+
+        private string Distinct(UnaryExpression exp) => $"SELECT DISTINCT * FROM ({Serialize(exp.Sub)}) AS this";
+
+        private string OrderBy(OrderByExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this ORDER BY {Secondary.Serialize(exp.KeySelector.Body)} OFFSET 0 ROWS";
+
+        private string OrderByDescending(OrderByDescendingExpression exp) => $"SELECT * FROM ({Serialize(exp.Sub)}) AS this ORDER BY {Secondary.Serialize(exp.KeySelector.Body)} DESC OFFSET 0 ROWS";
     }
 }
