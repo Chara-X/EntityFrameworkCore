@@ -14,7 +14,6 @@ namespace EntityFrameworkCore.Middlewares.Concrete
         {
             Console.WriteLine(request);
             var rows = new List<Dictionary<string, object>>();
-            Connection.Open();
             var reader = new SqlCommand(request, Connection).ExecuteReader();
             while (reader.Read())
             {
@@ -24,10 +23,10 @@ namespace EntityFrameworkCore.Middlewares.Concrete
                     var value = reader.GetValue(i);
                     row.Add(reader.GetName(i), value is DBNull ? null : value);
                 }
+
                 rows.Add(row);
             }
 
-            Connection.Close();
             return rows;
         }
     }

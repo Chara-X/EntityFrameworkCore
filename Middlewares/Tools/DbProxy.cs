@@ -6,8 +6,10 @@ using EntityFrameworkCore.Middlewares.Concrete;
 
 namespace EntityFrameworkCore.Middlewares.Tools
 {
-    public class DbProxy
+    public class DbProxy:IDisposable
     {
+        private readonly SqlConnection connection;
+
         private readonly ExecuteReaderMiddleware executeReader;
 
         private readonly EncodeCreateMiddleware create;
@@ -18,11 +20,11 @@ namespace EntityFrameworkCore.Middlewares.Tools
 
         public DbProxy(string connectionString)
         {
-            var connection = new SqlConnection(connectionString);
+            connection = new SqlConnection(new SqlConnectionStringBuilder(connectionString) { MultipleActiveResultSets = true }.ToString());
+            connection.Open();
             var executeNonQuery = new ExecuteNonQueryMiddleware(connection);
             var executeScalar = new ExecuteScalarMiddleware(connection);
             executeReader = new ExecuteReaderMiddleware(connection);
-
             create = new EncodeCreateMiddleware(executeNonQuery);
             insert = new EncodeInsertMiddleware(executeNonQuery);
             update = new EncodeUpdateMiddleware(executeNonQuery);
@@ -45,5 +47,7 @@ namespace EntityFrameworkCore.Middlewares.Tools
         public object Scalar(Expression exp) => scalar.Invoke(exp);
 
         public IEnumerable<T> Reader<T>(Expression exp) => new EncodeReaderMiddleware<T>(executeReader).Invoke(exp);
+
+        public void Dispose() => connection.Close();
     }
 }

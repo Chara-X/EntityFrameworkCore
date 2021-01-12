@@ -12,10 +12,7 @@ namespace EntityFrameworkCore.Middlewares.Concrete
         public int Invoke(string request)
         {
             Console.WriteLine(request);
-            Connection.Open();
-            var count = new SqlCommand(request, Connection).ExecuteNonQuery();
-            Connection.Close();
-            return count;
+            return  new SqlCommand(request, Connection).ExecuteNonQuery();
         }
     }
 }

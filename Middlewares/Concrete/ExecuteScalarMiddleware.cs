@@ -12,10 +12,7 @@ namespace EntityFrameworkCore.Middlewares.Concrete
         public object Invoke(string request)
         {
             Console.WriteLine(request);
-            Connection.Open();
-            var res= new SqlCommand(request, Connection).ExecuteScalar();
-            Connection.Close();
-            return res;
+            return new SqlCommand(request, Connection).ExecuteScalar();
         }
     }
 }
