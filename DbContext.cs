@@ -8,11 +8,13 @@ using EntityFrameworkCore.Middlewares.Tools;
 
 namespace EntityFrameworkCore
 {
-    public class DbContext
+    public class DbContext:IDisposable
     {
-        public DbProxy Proxy { get; set; }
-
         private readonly List<DbSetLogger> loggers = new List<DbSetLogger>();
+
+        private readonly List<Type> models = new List<Type>();
+
+        public DbProxy Proxy { get; set; }
 
         public DbContext(string connectionString)
         {
@@ -21,12 +23,17 @@ namespace EntityFrameworkCore
             {
                 var type = property.PropertyType;
                 if (type.Name != typeof(DbSet<>).Name) continue;
+                models.Add(type.GenericTypeArguments[0]);
                 var logger = new DbSetLogger(Proxy);
                 property.SetValue(this, Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] {logger}, null));
                 loggers.Add(logger);
             }
         }
 
-        public int SaveChanged() => loggers.Sum(logger => logger.Submit());
+        public void CreateModels() => Proxy.CreateModels(models);
+
+        public int SaveChanges() => loggers.Sum(logger => logger.Submit());
+
+        public void Dispose() => Proxy.Dispose();
     }
 }
