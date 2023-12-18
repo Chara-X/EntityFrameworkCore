@@ -94,7 +94,7 @@ using (var db = new SchoolDbContext(ConnectionString))
 }
 ```
 
-![img](http://www.kdocs.cn/api/v3/office/copy/Yy9vaDFIOUg4Mk9aSS84NXpCaVc1Sm1QcUZtT0tkVnVKTkVpdFI5WmJWUmdpOVV3UnJ2ZFlmREJ6dDRaYVE2ODc4azNUN0dObm4rYit4MC96UDlrdWVUMlFub3I2V0p3eVVoYjRLVk5sdE13NXV5aUJnMk5VcnJROGwweFFJZUljbzVsd2FGQnFLaXNJQ2UyU051b2FmMGhUaUc0K3M0YlE0VE42NWtua215ZVVmTHlEaDc0TlhjZG4rQ0NJanhNUVp5bERqTXR2Qk11ODk2UUYvaTNkRWRUZG5wVGoweGY1aWh1OG9zTjJQc1B2Tk90dTIyS1g3YTZqUkpSV2hFYWpoZHFTM21vS1ZRPQ==/attach/object/FW7YGBIANY?)
+![img](https://gitee.com/chara-x/resources/raw/master/Images/EntityFrameworkCore/%7BY@LPC57RNH%60JA%7BCLWTX@5.png)
 
 ## **Querying**
 
@@ -108,4 +108,4 @@ foreach (var x in db.Students.Where(x => x.Teacher.Car.Name == "A").Select(x => 
 }
 ```
 
-![img](http://www.kdocs.cn/api/v3/office/copy/Yy9vaDFIOUg4Mk9aSS84NXpCaVc1Sm1QcUZtT0tkVnVKTkVpdFI5WmJWUmdpOVV3UnJ2ZFlmREJ6dDRaYVE2ODc4azNUN0dObm4rYit4MC96UDlrdWVUMlFub3I2V0p3eVVoYjRLVk5sdE13NXV5aUJnMk5VcnJROGwweFFJZUljbzVsd2FGQnFLaXNJQ2UyU051b2FmMGhUaUc0K3M0YlE0VE42NWtua215ZVVmTHlEaDc0TlhjZG4rQ0NJanhNUVp5bERqTXR2Qk11ODk2UUYvaTNkRWRUZG5wVGoweGY1aWh1OG9zTjJQc1B2Tk90dTIyS1g3YTZqUkpSV2hFYWpoZHFTM21vS1ZRPQ==/attach/object/7S7IGBIAPI?)
+![img](https://gitee.com/chara-x/resources/raw/master/Images/EntityFrameworkCore/ALNIB%60KI%7B@TNP$VES%7BY9~LO.png)
