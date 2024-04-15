@@ -1,15 +1,8 @@
-# EntityFrameworkCore
-
-Entity Framework (EF) Core 是轻量级、可扩展、跨平台的数据访问技术，EF Core 可用作对象关系映射程序 (O/RM)，这可以实现以下两点：
-
-- 使 .NET 开发人员能够使用 .NET 对象处理数据库
-- 无需再像通常那样编写大部分数据访问代码
+# O/R mapping
 
 ## The model
 
-使用 EF Core 时，数据访问是使用模型执行的。模型由实体类和表示与数据库的会话的上下文对象组成。上下文对象允许查询和保存数据。
-
-```C#
+```csharp
 public class SchoolDbContext : DbContext
 {
     public DbSet<Car> Cars { get; set; }
@@ -74,11 +67,9 @@ public class Car
 }
 ```
 
-## **Saving data**
+## Saving data
 
-使用实体类的实例在数据库中创建、删除和修改数据。
-
-```C#
+```csharp
 using (var db = new SchoolDbContext(ConnectionString))
 {
     db.CreateModels();
@@ -96,11 +87,9 @@ using (var db = new SchoolDbContext(ConnectionString))
 
 ![img](https://gitee.com/chara-x/resources/raw/master/Images/EntityFrameworkCore/%7BY@LPC57RNH%60JA%7BCLWTX@5.png)
 
-## **Querying**
+## Querying
 
-使用语言集成查询 （LINQ） 从数据库中检索实体类的实例。
-
-```C#
+```csharp
 using var db = new SchoolDbContext(ConnectionString);
 foreach (var x in db.Students.Where(x => x.Teacher.Car.Name == "A").Select(x => x.Teacher))
 {
